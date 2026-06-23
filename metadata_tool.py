@@ -85,12 +85,13 @@ class RoundedButton(tk.Frame):
     def __init__(self, parent, text='', command=None, bg=GBNB, fg='white',
                  hover=GBNB2, font=("Segoe UI",10,"bold"), radius=8,
                  padx=14, pady=8, width=0, height=0, **kw):
-        super().__init__(parent, bg=parent.cget("bg"))
+        pbg = BG  # always use app background, avoid cget issues
+        super().__init__(parent, bg=pbg)
         self._bg=bg; self._hover=hover; self._fg=fg
         self._text=text; self._cmd=command; self._font=font
         self._r=radius; self._padx=padx; self._pady=pady
         self._w=width; self._h=height
-        self._cv=tk.Canvas(self, bg=parent.cget("bg"),
+        self._cv=tk.Canvas(self, bg=pbg,
             highlightthickness=0, cursor="hand2")
         self._cv.pack(fill="both", expand=True)
         self._cv.bind("<Configure>", self._on_resize)
