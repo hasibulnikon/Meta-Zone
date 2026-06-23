@@ -80,47 +80,18 @@ def rounded_rect(canvas, x1, y1, x2, y2, r, **kw):
     canvas.create_rectangle(x1+r,y1,x2-r,y2,outline='',**kw)
     canvas.create_rectangle(x1,y1+r,x2,y2-r,outline='',**kw)
 
-class RoundedButton(tk.Frame):
-    """A fully rounded button using a Canvas inside a Frame."""
-    def __init__(self, parent, text='', command=None, bg=GBNB, fg='white',
-                 hover=GBNB2, font=('Segoe UI',10,'bold'), radius=8,
-                 padx=14, pady=8, width=0, height=0):
-        # Note: no **kw — padx/pady are consumed here, not passed to Frame
-        super().__init__(parent, bg=BG)
-        self._bg=bg; self._hover=hover; self._fg=fg
-        self._text=text; self._cmd=command; self._font=font
-        self._r=radius; self._w=0; self._h=0
-        self._req_w=width; self._req_h=height
-        self._cv=tk.Canvas(self, bg=BG, highlightthickness=0, cursor='hand2')
-        self._cv.pack(fill='both', expand=True)
-        if width: self._cv.configure(width=width)
-        if height: self._cv.configure(height=height)
-        self._cv.bind('<Configure>', self._on_resize)
-        self._cv.bind('<Enter>', lambda e: self._draw(hover))
-        self._cv.bind('<Leave>', lambda e: self._draw(bg))
-        self._cv.bind('<Button-1>', lambda e: command() if command else None)
+def RoundedButton(parent, text='', command=None, bg=GBNB, fg='white',
+                  hover=GBNB2, font=('Segoe UI',10,'bold'), radius=8,
+                  padx=14, pady=8, width=0, height=0):
+    """Simple styled button — works reliably on Windows."""
+    b = tk.Button(parent, text=text, command=command,
+        font=font, bg=bg, fg=fg, relief='flat',
+        padx=padx, pady=pady, cursor='hand2',
+        activebackground=hover, activeforeground=fg,
+        bd=0, highlightthickness=0)
+    if width: b.configure(width=width)
+    return b
 
-    def _on_resize(self, e):
-        self._w=e.width; self._h=e.height
-        self._draw(self._bg)
-
-    def _draw(self, bg):
-        self._bg=bg
-        if not self._w or not self._h: return
-        self._cv.delete("all")
-        rounded_rect(self._cv,0,0,self._w,self._h,self._r,fill=bg)
-        self._cv.create_text(self._w//2,self._h//2,text=self._text,
-            font=self._font,fill=self._fg,anchor="center")
-
-    def configure(self, **kw):
-        if "text" in kw:
-            self._text=kw.pop("text")
-            self._draw(self._bg)
-        if "state" in kw:
-            s=kw.pop("state")
-            self._bg=GBNB if s=="normal" else BG3
-            self._draw(self._bg)
-        super().configure(**kw)
 
 class Toggle(tk.Canvas):
     """High-res rounded pill toggle switch."""
