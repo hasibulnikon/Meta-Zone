@@ -80,38 +80,45 @@ def rounded_rect(canvas, x1, y1, x2, y2, r, **kw):
     canvas.create_rectangle(x1+r,y1,x2-r,y2,outline='',**kw)
     canvas.create_rectangle(x1,y1+r,x2,y2-r,outline='',**kw)
 
-class RoundedButton(tk.Canvas):
-    """A fully rounded button drawn on canvas."""
+class RoundedButton(tk.Frame):
+    """A fully rounded button using a Canvas inside a Frame."""
     def __init__(self, parent, text='', command=None, bg=GBNB, fg='white',
-                 hover=GBNB2, font=('Segoe UI',10,'bold'), radius=8,
-                 padx=14, pady=8, width=None, height=None, **kw):
+                 hover=GBNB2, font=("Segoe UI",10,"bold"), radius=8,
+                 padx=14, pady=8, width=0, height=0, **kw):
+        super().__init__(parent, bg=parent.cget("bg"))
         self._bg=bg; self._hover=hover; self._fg=fg
         self._text=text; self._cmd=command; self._font=font
-        self._r=radius; self._px=padx; self._py=pady
-        # measure text
-        tmp=tk.Label(parent,text=text,font=font)
-        tw=tmp.winfo_reqwidth(); th=tmp.winfo_reqheight()
-        tmp.destroy()
-        w=width or tw+padx*2; h=height or th+pady*2
-        super().__init__(parent,width=w,height=h,
-            bg=parent.cget('bg'),highlightthickness=0,cursor='hand2',**kw)
-        self._w=w; self._h=h
-        self._draw(bg)
-        self.bind('<Enter>',lambda e: self._draw(hover))
-        self.bind('<Leave>',lambda e: self._draw(bg))
-        self.bind('<Button-1>',lambda e: command() if command else None)
+        self._r=radius; self._padx=padx; self._pady=pady
+        self._w=width; self._h=height
+        self._cv=tk.Canvas(self, bg=parent.cget("bg"),
+            highlightthickness=0, cursor="hand2")
+        self._cv.pack(fill="both", expand=True)
+        self._cv.bind("<Configure>", self._on_resize)
+        self._cv.bind("<Enter>", lambda e: self._draw(hover))
+        self._cv.bind("<Leave>", lambda e: self._draw(bg))
+        self._cv.bind("<Button-1>", lambda e: command() if command else None)
+        if width and height:
+            self._cv.configure(width=width, height=height)
+
+    def _on_resize(self, e):
+        self._w=e.width; self._h=e.height
+        self._draw(self._bg)
 
     def _draw(self, bg):
-        self.delete('all')
-        rounded_rect(self,0,0,self._w,self._h,self._r,fill=bg)
-        self.create_text(self._w//2,self._h//2,text=self._text,
-            font=self._font,fill=self._fg,anchor='center')
+        self._bg=bg
+        if not self._w or not self._h: return
+        self._cv.delete("all")
+        rounded_rect(self._cv,0,0,self._w,self._h,self._r,fill=bg)
+        self._cv.create_text(self._w//2,self._h//2,text=self._text,
+            font=self._font,fill=self._fg,anchor="center")
 
     def configure(self, **kw):
-        if 'text' in kw: self._text=kw.pop('text'); self._draw(self._bg)
-        if 'state' in kw:
-            s=kw.pop('state')
-            self._bg=GBNB if s=='normal' else BG3
+        if "text" in kw:
+            self._text=kw.pop("text")
+            self._draw(self._bg)
+        if "state" in kw:
+            s=kw.pop("state")
+            self._bg=GBNB if s=="normal" else BG3
             self._draw(self._bg)
         super().configure(**kw)
 
