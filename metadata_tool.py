@@ -427,7 +427,7 @@ class App:
         ih=tk.Frame(hdr,bg=BG3,padx=10,pady=8)
         ih.pack(fill='x')
         tk.Label(ih,text='ACTIVITY LOG',font=('Segoe UI',9,'bold'),
-            bg=BG3,fg=TXT3,letter_spacing=2).pack(side='left')
+            bg=BG3,fg=TXT3).pack(side='left')
         tk.Button(ih,text='Clear',command=self.clear_log,
             font=('Segoe UI',8),bg=BG4,fg=TXT3,relief='flat',
             padx=6,pady=2,cursor='hand2',
