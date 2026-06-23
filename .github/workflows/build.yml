@@ -80,10 +80,10 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v2.2
-          name: Meta Zone v2.2
+          tag_name: v0.2
+          name: Meta Zone v0.2
           body: |
-            ## Meta Zone v2.2
+            ## Meta Zone v0.2
             - Dark theme UI with compact layout
             - Reset button next to Embed button
             - Activity log panel (collapsible)
