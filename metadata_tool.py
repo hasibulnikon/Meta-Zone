@@ -83,23 +83,22 @@ def rounded_rect(canvas, x1, y1, x2, y2, r, **kw):
 class RoundedButton(tk.Frame):
     """A fully rounded button using a Canvas inside a Frame."""
     def __init__(self, parent, text='', command=None, bg=GBNB, fg='white',
-                 hover=GBNB2, font=("Segoe UI",10,"bold"), radius=8,
-                 padx=14, pady=8, width=0, height=0, **kw):
-        pbg = BG  # always use app background, avoid cget issues
-        super().__init__(parent, bg=pbg)
+                 hover=GBNB2, font=('Segoe UI',10,'bold'), radius=8,
+                 padx=14, pady=8, width=0, height=0):
+        # Note: no **kw — padx/pady are consumed here, not passed to Frame
+        super().__init__(parent, bg=BG)
         self._bg=bg; self._hover=hover; self._fg=fg
         self._text=text; self._cmd=command; self._font=font
-        self._r=radius; self._padx=padx; self._pady=pady
-        self._w=width; self._h=height
-        self._cv=tk.Canvas(self, bg=pbg,
-            highlightthickness=0, cursor="hand2")
-        self._cv.pack(fill="both", expand=True)
-        self._cv.bind("<Configure>", self._on_resize)
-        self._cv.bind("<Enter>", lambda e: self._draw(hover))
-        self._cv.bind("<Leave>", lambda e: self._draw(bg))
-        self._cv.bind("<Button-1>", lambda e: command() if command else None)
-        if width and height:
-            self._cv.configure(width=width, height=height)
+        self._r=radius; self._w=0; self._h=0
+        self._req_w=width; self._req_h=height
+        self._cv=tk.Canvas(self, bg=BG, highlightthickness=0, cursor='hand2')
+        self._cv.pack(fill='both', expand=True)
+        if width: self._cv.configure(width=width)
+        if height: self._cv.configure(height=height)
+        self._cv.bind('<Configure>', self._on_resize)
+        self._cv.bind('<Enter>', lambda e: self._draw(hover))
+        self._cv.bind('<Leave>', lambda e: self._draw(bg))
+        self._cv.bind('<Button-1>', lambda e: command() if command else None)
 
     def _on_resize(self, e):
         self._w=e.width; self._h=e.height
