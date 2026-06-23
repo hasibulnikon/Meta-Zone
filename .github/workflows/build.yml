@@ -78,10 +78,10 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.2
-          name: Meta Zone v0.2
+          tag_name: v0.3
+          name: Meta Zone v0.3
           body: |
-            ## Meta Zone v0.2
+            ## Meta Zone v0.3
             Batch embed IPTC + XMP metadata from CSV into JPEG, PNG, EPS, AI files.
 
             ### Features
