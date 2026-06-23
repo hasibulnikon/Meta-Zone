@@ -186,7 +186,7 @@ class App:
             foreground=TXT,selectbackground=BLU,arrowcolor=TXT2,bordercolor=BDR)
         s.map('TCombobox',fieldbackground=[('readonly',BG3)],
             foreground=[('readonly',TXT)],bordercolor=[('focus',BLU)])
-        s.configure('Vert.TScrollbar',background=BG3,troughcolor=BG2,
+        s.configure('Vertical.TScrollbar',background=BG3,troughcolor=BG2,
             arrowcolor=TXT3,bordercolor=BDR)
         s.configure('G.Horizontal.TProgressbar',background=GRN,
             troughcolor=BG3,bordercolor=BDR)
@@ -437,7 +437,7 @@ class App:
         lf.grid(row=1,column=0,sticky='nsew')
         self.log_text=tk.Text(lf,font=('Consolas',9),bg=BG2,fg=TXT,
             relief='flat',state='disabled',wrap='word',padx=8,pady=6)
-        vsb=ttk.Scrollbar(lf,style='Vert.TScrollbar',command=self.log_text.yview)
+        vsb=ttk.Scrollbar(lf,command=self.log_text.yview)
         self.log_text.configure(yscrollcommand=vsb.set)
         vsb.pack(side='right',fill='y')
         self.log_text.pack(fill='both',expand=True)
