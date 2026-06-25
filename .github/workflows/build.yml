@@ -2,8 +2,7 @@ name: Build Windows EXE
 
 on:
 push:
-branches:
-- main
+branches: [main]
 workflow_dispatch:
 
 jobs:
@@ -21,125 +20,30 @@ steps:
       python-version: "3.11"
 
   - name: Install dependencies
+    run: |
+      python -m pip install --upgrade pip
+      pip install pyinstaller pillow customtkinter
+
+  - name: Download ExifTool
     shell: pwsh
     run: |
-      pip install pyinstaller
-      pip install pillow
-      pip install customtkinter
+      Invoke-WebRequest "https://oliverbetz.de/cms/files/Artikel/ExifTool-for-Windows/ExifTool_install_13.59_64.exe" -OutFile ExifTool_install.exe
+      Start-Process -FilePath ".\ExifTool_install.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /DIR=C:\ExifTool" -Wait
 
-  - name: Download ExifTool for Windows
+  - name: Build EXE
     shell: pwsh
     run: |
-      Invoke-WebRequest `
-        -Uri "https://oliverbetz.de/cms/files/Artikel/ExifTool-for-Windows/ExifTool_install_13.59_64.exe" `
-        -OutFile ExifTool_install.exe `
-        -UseBasicParsing
+      pyinstaller `
+        --onefile `
+        --windowed `
+        --name MetaZone `
+        --icon=icon.ico `
+        "--add-data=C:\ExifTool\exiftool.exe;exiftool_pkg" `
+        metadata_tool.py
 
-      Start-Process `
-        -FilePath "ExifTool_install.exe" `
-        -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /DIR=C:\ExifTool" `
-        -Wait
-
-      if (Test-Path "C:\ExifTool\exiftool.exe") {
-        Write-Host "ExifTool found at C:\ExifTool"
-      }
-      elseif (Test-Path "C:\Windows\exiftool.exe") {
-        New-Item -ItemType Directory -Force -Path "C:\ExifTool"
-        Copy-Item "C:\Windows\exiftool.exe" "C:\ExifTool\exiftool.exe" -Force
-      }
-      else {
-        $found = Get-ChildItem `
-          -Path "C:\" `
-          -Filter "exiftool.exe" `
-          -Recurse `
-          -ErrorAction SilentlyContinue |
-          Select-Object -First 1
-
-        if ($found) {
-          New-Item -ItemType Directory -Force -Path "C:\ExifTool"
-          Copy-Item $found.FullName "C:\ExifTool\exiftool.exe"
-        }
-        else {
-          Write-Error "ExifTool not found"
-          exit 1
-        }
-      }
-
-      Write-Host "ExifTool ready"
-
-  - name: Build EXE with PyInstaller
-    shell: pwsh
-    run: |
-      $args = @(
-        "--onefile",
-        "--windowed",
-        "--name=MetaZone"
-      )
-
-      # Icon
-      if (Test-Path "icon.png") {
-        $args += "--icon=icon.png"
-        Write-Host "Using icon.png"
-      }
-      elseif (Test-Path "icon.ico") {
-        $args += "--icon=icon.ico"
-        Write-Host "Using icon.ico"
-      }
-
-      # ExifTool executable
-      $args += "--add-data=C:\ExifTool\exiftool.exe;exiftool_pkg"
-
-      # ExifTool support files
-      if (Test-Path "C:\ExifTool\exiftool_files") {
-        $args += "--add-data=C:\ExifTool\exiftool_files;exiftool_pkg\exiftool_files"
-      }
-
-      # Bundle app icon
-      if (Test-Path "icon.png") {
-        $args += "--add-data=icon.png;."
-      }
-
-      # Main script
-      $args += "metadata_tool.py"
-
-      Write-Host "Running: pyinstaller $args"
-
-      & pyinstaller @args
-
-  - name: Upload EXE as artifact
+  - name: Upload EXE
     uses: actions/upload-artifact@v4
     with:
       name: MetaZone-Windows
-      path: dist\MetaZone.exe
-
-  - name: Create Release
-    uses: softprops/action-gh-release@v2
-    with:
-      tag_name: v0.4
-      name: Meta Zone v0.4
-      make_latest: true
-      files: dist\MetaZone.exe
-      body: |
-        ## Meta Zone v0.4
-
-        Modern responsive UI rebuild.
-
-        ### Features
-        - Rounded modern UI
-        - Responsive fullscreen layout
-        - Modern switches and buttons
-        - CSV metadata embedding
-        - ExifTool integration
-        - Activity logging
-
-        ### How to use
-        1. Download MetaZone.exe
-        2. Open the app
-        3. Load CSV
-        4. Select image folder
-        5. Map metadata columns
-        6. Start embedding
-
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      path: dist/MetaZone.exe
 ```
