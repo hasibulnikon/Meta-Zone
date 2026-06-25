@@ -1,102 +1,145 @@
 name: Build Windows EXE
 
 on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+push:
+branches:
+- main
+workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: windows-latest
+build:
+runs-on: windows-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+```
+steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+  - name: Set up Python
+    uses: actions/setup-python@v5
+    with:
+      python-version: "3.11"
 
-      - name: Install dependencies
-        run: |
-            pip install pyinstaller
-            pip install pillow
-            pip install customtkinter
+  - name: Install dependencies
+    shell: pwsh
+    run: |
+      pip install pyinstaller
+      pip install pillow
+      pip install customtkinter
 
-      - name: Download ExifTool for Windows
-        run: |
-          Invoke-WebRequest -Uri "https://oliverbetz.de/cms/files/Artikel/ExifTool-for-Windows/ExifTool_install_13.59_64.exe" -OutFile ExifTool_install.exe -UseBasicParsing
-          Start-Process -FilePath "ExifTool_install.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /DIR=C:\ExifTool" -Wait
-          if (Test-Path "C:\ExifTool\exiftool.exe") {
-            Copy-Item "C:\ExifTool\exiftool.exe" -Destination "exiftool.exe"
-          } elseif (Test-Path "C:\Windows\exiftool.exe") {
-            Copy-Item "C:\Windows\exiftool.exe" -Destination "exiftool.exe"
-          } else {
-            $found = Get-ChildItem -Path "C:\" -Filter "exiftool.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
-            if ($found) { Copy-Item $found.FullName -Destination "exiftool.exe" }
-            else { Write-Error "ExifTool not found"; exit 1 }
-          }
-          $size = (Get-Item exiftool.exe).Length
-          Write-Host "ExifTool ready: $size bytes"
-        shell: pwsh
+  - name: Download ExifTool for Windows
+    shell: pwsh
+    run: |
+      Invoke-WebRequest `
+        -Uri "https://oliverbetz.de/cms/files/Artikel/ExifTool-for-Windows/ExifTool_install_13.59_64.exe" `
+        -OutFile ExifTool_install.exe `
+        -UseBasicParsing
 
-      - name: Build EXE with PyInstaller (with icon if present)
-        run: |
-          # Determine icon flag — prefer PNG, fallback to ICO
-          $iconFlag = ""
-          if (Test-Path "icon.png") {
-            $iconFlag = "--icon=icon.png"
-            Write-Host "Custom PNG icon found"
-          } elseif (Test-Path "icon.ico") {
-            $iconFlag = "--icon=icon.ico"
-            Write-Host "Custom ICO icon found"
-          } else {
-            Write-Host "No custom icon found, using default"
-          }
-          # Bundle icon.png into app if present
-          $iconData = ""
-          if (Test-Path "icon.png") { $iconData = "--add-data=icon.png;." }
-          $addData = "--add-data=C:\ExifTool\exiftool.exe;exiftool_pkg"
-          if (Test-Path "C:\ExifTool\exiftool_files") {
-            $addData2 = "--add-data=C:\ExifTool\exiftool_files;exiftool_pkg\exiftool_files"
-            $cmd = "pyinstaller --onefile --windowed --name MetadataEmbedder $addData $addData2"
-            if ($iconFlag) { $cmd += " $iconFlag" }
-            if ($iconData) { $cmd += " $iconData" }
-            $cmd += " metadata_tool.py"
-            Invoke-Expression $cmd
-          } else {
-            $cmd = "pyinstaller --onefile --windowed --name MetadataEmbedder $addData"
-            if ($iconFlag) { $cmd += " $iconFlag" }
-            if ($iconData) { $cmd += " $iconData" }
-            $cmd += " metadata_tool.py"
-            Invoke-Expression $cmd
-          }
-        shell: pwsh
+      Start-Process `
+        -FilePath "ExifTool_install.exe" `
+        -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /DIR=C:\ExifTool" `
+        -Wait
 
-      - name: Upload EXE as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: MetadataEmbedder-Windows
-          path: dist\MetadataEmbedder.exe
+      if (Test-Path "C:\ExifTool\exiftool.exe") {
+        Write-Host "ExifTool found at C:\ExifTool"
+      }
+      elseif (Test-Path "C:\Windows\exiftool.exe") {
+        New-Item -ItemType Directory -Force -Path "C:\ExifTool"
+        Copy-Item "C:\Windows\exiftool.exe" "C:\ExifTool\exiftool.exe" -Force
+      }
+      else {
+        $found = Get-ChildItem `
+          -Path "C:\" `
+          -Filter "exiftool.exe" `
+          -Recurse `
+          -ErrorAction SilentlyContinue |
+          Select-Object -First 1
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v2.2
-          name: Meta Zone v2.2
-          body: |
-            ## Meta Zone v2.2
-            - Dark theme UI with compact layout
-            - Reset button next to Embed button
-            - Activity log panel (collapsible)
-            - Status bar with live pill counters
-            - Extension-agnostic file matching (CSV says .png, finds .jpg automatically)
-            - Custom icon support (place icon.ico in repo root)
-            - Timestamps in activity log
+        if ($found) {
+          New-Item -ItemType Directory -Force -Path "C:\ExifTool"
+          Copy-Item $found.FullName "C:\ExifTool\exiftool.exe"
+        }
+        else {
+          Write-Error "ExifTool not found"
+          exit 1
+        }
+      }
 
-            **How to use:** Download MetadataEmbedder.exe · Double-click · Load CSV · Map columns · Select folder · Embed
-          files: dist\MetadataEmbedder.exe
-          make_latest: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      Write-Host "ExifTool ready"
+
+  - name: Build EXE with PyInstaller
+    shell: pwsh
+    run: |
+      $args = @(
+        "--onefile",
+        "--windowed",
+        "--name=MetaZone"
+      )
+
+      # Icon
+      if (Test-Path "icon.png") {
+        $args += "--icon=icon.png"
+        Write-Host "Using icon.png"
+      }
+      elseif (Test-Path "icon.ico") {
+        $args += "--icon=icon.ico"
+        Write-Host "Using icon.ico"
+      }
+
+      # ExifTool executable
+      $args += "--add-data=C:\ExifTool\exiftool.exe;exiftool_pkg"
+
+      # ExifTool support files
+      if (Test-Path "C:\ExifTool\exiftool_files") {
+        $args += "--add-data=C:\ExifTool\exiftool_files;exiftool_pkg\exiftool_files"
+      }
+
+      # Bundle app icon
+      if (Test-Path "icon.png") {
+        $args += "--add-data=icon.png;."
+      }
+
+      # Main script
+      $args += "metadata_tool.py"
+
+      Write-Host "Running: pyinstaller $args"
+
+      & pyinstaller @args
+
+  - name: Upload EXE as artifact
+    uses: actions/upload-artifact@v4
+    with:
+      name: MetaZone-Windows
+      path: dist\MetaZone.exe
+
+  - name: Create Release
+    uses: softprops/action-gh-release@v2
+    with:
+      tag_name: v0.4
+      name: Meta Zone v0.4
+      make_latest: true
+      files: dist\MetaZone.exe
+      body: |
+        ## Meta Zone v0.4
+
+        Modern responsive UI rebuild.
+
+        ### Features
+        - Rounded modern UI
+        - Responsive fullscreen layout
+        - Modern switches and buttons
+        - CSV metadata embedding
+        - ExifTool integration
+        - Activity logging
+
+        ### How to use
+        1. Download MetaZone.exe
+        2. Open the app
+        3. Load CSV
+        4. Select image folder
+        5. Map metadata columns
+        6. Start embedding
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
