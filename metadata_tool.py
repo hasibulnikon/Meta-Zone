@@ -251,7 +251,6 @@ class App:
         self._build_map_card()
 
         # Log panel — cleaned modern layout
- — always visible, 210px
         self.log_panel=tk.Frame(self.body,bg=BG2,width=360)
         self.log_panel.grid(row=0,column=2,sticky='nsew')
         self.log_panel.grid_propagate(False)
