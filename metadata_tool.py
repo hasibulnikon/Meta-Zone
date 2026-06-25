@@ -138,7 +138,7 @@ class App:
         self.root.title('Meta Zone')
         self.root.configure(bg=BG)
         self.root.resizable(True,True)
-        self.root.minsize(980,700)
+        self.root.minsize(500,520)
 
         self.csv_path   =tk.StringVar()
         self.folder_path=tk.StringVar()
@@ -195,15 +195,6 @@ class App:
         sw=self.root.winfo_screenwidth(); sh=self.root.winfo_screenheight()
         self.root.geometry(f'{w}x{h}+{(sw-w)//2}+{(sh-h)//2}')
 
-    def _bind_mousewheel(self, event=None):
-        self.cv.bind_all('<MouseWheel>', self._on_mousewheel)
-
-    def _unbind_mousewheel(self, event=None):
-        self.cv.unbind_all('<MouseWheel>')
-
-    def _on_mousewheel(self, event):
-        self.cv.yview_scroll(int(-1*(event.delta/120)), 'units')
-
     def ts(self): return datetime.datetime.now().strftime('%H:%M:%S')
 
     # ── BUILD UI ───────────────────────────────────────────────────────
@@ -229,8 +220,7 @@ class App:
         # Body: left + mid-strip + log
         self.body=tk.Frame(self.root,bg=BG)
         self.body.pack(fill='both',expand=True)
-        self.body.columnconfigure(0,weight=3)
-        self.body.columnconfigure(1,weight=2)
+        self.body.columnconfigure(0,weight=1)
         self.body.rowconfigure(0,weight=1)
 
         # Left scrollable panel
@@ -247,8 +237,12 @@ class App:
         self.lpanel.bind('<Configure>',lambda e: self.cv.configure(
             scrollregion=self.cv.bbox('all')))
         self.lpanel.columnconfigure(0,weight=1)
-        self.cv.bind('<Enter>', self._bind_mousewheel)
-        self.cv.bind('<Leave>', self._unbind_mousewheel)
+        self.cv.bind('<Enter>', lambda e: self.cv.bind_all(
+            '<MouseWheel>',
+            lambda ev: self.cv.yview_scroll(int(-1*(ev.delta/120)), 'units')
+        ))
+
+        self.cv.bind('<Leave>', lambda e: self.cv.unbind_all('<MouseWheel>'))
 
         # Build left panel content
         self._build_embed_row()
@@ -256,9 +250,10 @@ class App:
         self._build_folder_card()
         self._build_map_card()
 
-        # Log panel — responsive modern layout
-        self.log_panel=tk.Frame(self.body,bg=BG2,width=420)
-        self.log_panel.grid(row=0,column=1,sticky='nsew',padx=(8,12),pady=(0,8))
+        # Log panel — cleaned modern layout
+ — always visible, 210px
+        self.log_panel=tk.Frame(self.body,bg=BG2,width=360)
+        self.log_panel.grid(row=0,column=2,sticky='nsew')
         self.log_panel.grid_propagate(False)
         self.log_panel.columnconfigure(0,weight=1)
         self.log_panel.rowconfigure(1,weight=1)
@@ -271,7 +266,7 @@ class App:
         row=tk.Frame(self.lpanel,bg=BG,pady=4)
         row.pack(fill='x')
         row.columnconfigure(0,weight=1)
-        self.embed_btn=tk.Button(row,text='Start Embedding',
+        self.embed_btn=tk.Button(row,text='▶   Embed Metadata Now',
             command=self.start_embed,
             font=('Segoe UI',13,'bold'),bg=GBNB,fg='white',
             relief='flat',pady=13,cursor='hand2',
@@ -405,15 +400,18 @@ class App:
         rm_row=tk.Frame(body,bg=BG3,highlightbackground=BDR,highlightthickness=1,
             padx=10,pady=8)
         rm_row.pack(fill='x')
-        rm_row.columnconfigure(0,weight=1)
-        tl=tk.Frame(rm_row,bg=BG3); tl.grid(row=0,column=0,sticky='w')
-        tk.Label(tl,text='Remove Program Name',font=('Segoe UI',10,'bold'),
+
+        left=tk.Frame(rm_row,bg=BG3)
+        left.pack(side='left',fill='both',expand=True)
+
+        tk.Label(left,text='Remove Program Name',font=('Segoe UI',10,'bold'),
             bg=BG3,fg=TXT2).pack(anchor='w')
-        tk.Label(tl,text='Clears upscaler/software name from metadata',
+
+        tk.Label(left,text='Clears upscaler/software name from metadata',
             font=('Segoe UI',8),bg=BG3,fg=TXT3).pack(anchor='w')
-        tg=Toggle(rm_row,text='On',var=self.rm_program,
-            bg=GRN2,fg=GRN,border=GRN3)
-        tg.pack(side='right')
+
+        Toggle(rm_row,text='On',var=self.rm_program,
+            bg=GRN2,fg=GRN,border=GRN3).pack(side='right')
 
     def _build_log(self):
         hdr=tk.Frame(self.log_panel,bg=BG3)
@@ -605,7 +603,7 @@ class App:
         self.p_ok.configure(text='0 embedded')
         self.p_warn.configure(text='0 not found')
         self.p_err.configure(text='0 errors')
-        self.embed_btn.configure(state='normal',text='Start Embedding')
+        self.embed_btn.configure(state='normal',text='▶   Embed Metadata Now')
         self.clear_log()
         self.log('↺  Reset — ready for new batch','info')
         if self.last_summary:
@@ -628,7 +626,7 @@ class App:
         if not fc or fc=='(skip)':
             messagebox.showerror('Column missing','Select the filename column in Step 3.'); return
         self.running=True
-        self.embed_btn.configure(state='disabled',text='Processing...')
+        self.embed_btn.configure(state='disabled',text='Processing…')
         threading.Thread(target=self._embed_thread,args=(et,),daemon=True).start()
 
     def _embed_thread(self,et):
@@ -695,7 +693,7 @@ class App:
         self.root.after(0,lambda: (
             self.log(f'● Done — {summary}','info'),
             self.set_status(f'Done — {summary}',GRN),
-            self.embed_btn.configure(state='normal',text='Start Embedding'),
+            self.embed_btn.configure(state='normal',text='▶   Embed Metadata Now'),
             setattr(self,'running',False)
         ))
 
