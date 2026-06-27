@@ -206,9 +206,9 @@ class App(ctk.CTk):
         # Right log panel — fixed 210px
         log_outer = ctk.CTkFrame(body, fg_color=BG2,
             corner_radius=12, border_width=1,
-            border_color=BDR, width=210)
+            border_color=BDR, width=190)
         log_outer.grid(row=0, column=1, sticky="nsew",
-            padx=(0,14), pady=12)
+            padx=(0,10), pady=10)
         log_outer.grid_propagate(False)
         log_outer.grid_rowconfigure(1, weight=1)
         log_outer.grid_columnconfigure(0, weight=1)
