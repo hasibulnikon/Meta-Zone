@@ -111,7 +111,7 @@ class App(ctk.CTk):
 
         self._load_icon()
         self._build_ui()
-        self._center(920, 920)
+        self._center(760, 925)
         self.minsize(536, 620)
         self.after(200, self._check_et)
 
