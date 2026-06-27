@@ -253,17 +253,17 @@ class App(ctk.CTk):
     def _card_header(self, parent, num, title, browse_cmd=None):
         hdr = ctk.CTkFrame(parent, fg_color=BG3,
             corner_radius=20, height=50)
-        hdr.pack(fill="x")
+        hdr.pack(fill="x", padx=0, pady=0)
         hdr.grid_propagate(False)
         hdr.grid_columnconfigure(1, weight=1)
 
         # Full circle badge
         ctk.CTkLabel(hdr, text=str(num),
-            font=ctk.CTkFont("Segoe UI", 12, "bold"),
+            font=ctk.CTkFont("Segoe UI", 13, "bold"),
             fg_color=GBNB, text_color="white",
-            corner_radius=60,
-            width=30, height=30).grid(
-            row=0, column=0, padx=(14,10), pady=7)
+            corner_radius=999,
+            width=34, height=34).grid(
+            row=0, column=0, padx=(14,10), pady=8)
 
         ctk.CTkLabel(hdr, text=title,
             font=ctk.CTkFont("Segoe UI", 13, "bold"),
@@ -287,17 +287,19 @@ class App(ctk.CTk):
             progress_color=GBNB,
             button_color="white",
             button_hover_color="#dddddd",
+            button_length=0,
             text_color=GRN,
             fg_color=BDR,
             onvalue=True, offvalue=False,
-            width=60, height=30)
+            switch_width=56,
+            switch_height=28)
 
     def _build_csv_card(self):
         card = self._card_frame()
         self._card_header(card, "1", "Load CSV", self.load_csv)
 
         body = ctk.CTkFrame(card, fg_color=BG2, corner_radius=0)
-        body.pack(fill="x", padx=14, pady=(10,12))
+        body.pack(fill="x", padx=14, pady=(8,12))
         body.grid_columnconfigure(0, weight=1)
 
         ctk.CTkEntry(body,
@@ -328,7 +330,7 @@ class App(ctk.CTk):
         self._card_header(card, "2", "Image folder", self.browse_folder)
 
         body = ctk.CTkFrame(card, fg_color=BG2, corner_radius=0)
-        body.pack(fill="x", padx=14, pady=(10,12))
+        body.pack(fill="x", padx=14, pady=(8,12))
         body.grid_columnconfigure(0, weight=1)
 
         ctk.CTkEntry(body,
@@ -359,7 +361,7 @@ class App(ctk.CTk):
         self._card_header(card, "3", "Map columns")
 
         body = ctk.CTkFrame(card, fg_color=BG2, corner_radius=0)
-        body.pack(fill="x", padx=14, pady=(10,12))
+        body.pack(fill="x", padx=14, pady=(8,12))
         body.grid_columnconfigure(0, weight=1)
         body.grid_columnconfigure(1, weight=1)
 
