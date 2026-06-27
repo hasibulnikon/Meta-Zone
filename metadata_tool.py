@@ -205,7 +205,7 @@ class App(ctk.CTk):
 
         # Right log panel — fixed 210px
         log_outer = ctk.CTkFrame(body, fg_color=BG2,
-            corner_radius=12, border_width=1,
+            corner_radius=20, border_width=1,
             border_color=BDR, width=200)
         log_outer.grid(row=0, column=1, sticky="nsew",
             padx=(0,10), pady=10)
@@ -224,14 +224,14 @@ class App(ctk.CTk):
             font=ctk.CTkFont("Segoe UI", 15, "bold"),
             fg_color=GBNB, hover_color=GBNB2,
             text_color="white", height=54,
-            corner_radius=10, command=self.start_embed)
+            corner_radius=27, command=self.start_embed)
         self.embed_btn.grid(row=0, column=0, sticky="ew")
 
         self.reset_btn = ctk.CTkButton(row,
             text="↺", width=54, height=54,
             font=ctk.CTkFont("Segoe UI", 20, "bold"),
             fg_color=RED2, hover_color="#3d1515",
-            text_color=RED, corner_radius=10,
+            text_color=RED, corner_radius=27,
             command=self.reset_all)
         self.reset_btn.grid(row=0, column=1, padx=(8,0))
 
@@ -239,20 +239,20 @@ class App(ctk.CTk):
             text="💾  Save Log", width=130, height=54,
             font=ctk.CTkFont("Segoe UI", 12, "bold"),
             fg_color=BG3, hover_color=BDR,
-            text_color=TXT2, corner_radius=10,
+            text_color=TXT2, corner_radius=27,
             command=self.export_log)
         self.save_log_btn.grid(row=0, column=2, padx=(8,0))
 
     def _card_frame(self):
         f = ctk.CTkFrame(self._left, fg_color=BG2,
-            corner_radius=12, border_width=1, border_color=BDR)
+            corner_radius=20, border_width=1, border_color=BDR)
         f.pack(fill="x", pady=(0,10))
         f.grid_columnconfigure(0, weight=1)
         return f
 
     def _card_header(self, parent, num, title, browse_cmd=None):
         hdr = ctk.CTkFrame(parent, fg_color=BG3,
-            corner_radius=10, height=50)
+            corner_radius=20, height=50)
         hdr.pack(fill="x")
         hdr.grid_propagate(False)
         hdr.grid_columnconfigure(1, weight=1)
@@ -261,7 +261,7 @@ class App(ctk.CTk):
         ctk.CTkLabel(hdr, text=str(num),
             font=ctk.CTkFont("Segoe UI", 12, "bold"),
             fg_color=GBNB, text_color="white",
-            corner_radius=18,
+            corner_radius=50,
             width=36, height=36).grid(
             row=0, column=0, padx=(14,10), pady=7)
 
@@ -275,7 +275,7 @@ class App(ctk.CTk):
                 width=95, height=32,
                 font=ctk.CTkFont("Segoe UI", 11, "bold"),
                 fg_color=GBNB, hover_color=GBNB2,
-                text_color="white", corner_radius=8,
+                text_color="white", corner_radius=20,
                 command=browse_cmd).grid(
                 row=0, column=2, padx=(0,12), pady=9)
 
@@ -305,7 +305,7 @@ class App(ctk.CTk):
             state="readonly", height=40,
             font=ctk.CTkFont("Segoe UI", 12),
             fg_color=BG3, text_color=TXT,
-            border_color=BDR, corner_radius=8).pack(
+            border_color=BDR, corner_radius=20).pack(
             fill="x", pady=(0,10))
 
         row = ctk.CTkFrame(body, fg_color=BG2, corner_radius=0)
@@ -316,7 +316,7 @@ class App(ctk.CTk):
             text="No CSV loaded",
             font=ctk.CTkFont("Segoe UI", 11, "bold"),
             fg_color=BG3, text_color=TXT3,
-            corner_radius=8, padx=12, pady=5)
+            corner_radius=20, padx=12, pady=5)
         self.csv_badge.grid(row=0, column=0, sticky="w")
 
         self._switch(row, "Match Filename Only",
@@ -336,7 +336,7 @@ class App(ctk.CTk):
             state="readonly", height=40,
             font=ctk.CTkFont("Segoe UI", 12),
             fg_color=BG3, text_color=TXT,
-            border_color=BDR, corner_radius=8).pack(
+            border_color=BDR, corner_radius=20).pack(
             fill="x", pady=(0,10))
 
         row = ctk.CTkFrame(body, fg_color=BG2, corner_radius=0)
@@ -347,7 +347,7 @@ class App(ctk.CTk):
             text="No folder selected",
             font=ctk.CTkFont("Segoe UI", 11, "bold"),
             fg_color=BG3, text_color=TXT3,
-            corner_radius=8, padx=12, pady=5)
+            corner_radius=20, padx=12, pady=5)
         self.folder_badge.grid(row=0, column=0, sticky="w")
 
         self._switch(row, "Include Sub-Folders",
@@ -400,7 +400,7 @@ class App(ctk.CTk):
                 dropdown_fg_color=BG4,
                 dropdown_text_color=TXT,
                 dropdown_hover_color=GBNB2,
-                corner_radius=8,
+                corner_radius=20,
                 height=38,
                 command=lambda v: self._update_match())
             cb.pack(fill="x", pady=(4,0))
@@ -413,7 +413,7 @@ class App(ctk.CTk):
             sticky="ew", pady=(14,10))
 
         # Remove Program Name
-        rm = ctk.CTkFrame(body, fg_color=BG3, corner_radius=10)
+        rm = ctk.CTkFrame(body, fg_color=BG3, corner_radius=20)
         rm.grid(row=4, column=0, columnspan=2,
             sticky="ew", pady=(0,4))
         rm.grid_columnconfigure(0, weight=1)
@@ -434,7 +434,7 @@ class App(ctk.CTk):
 
     def _build_log_panel(self, parent):
         hdr = ctk.CTkFrame(parent, fg_color=BG3,
-            corner_radius=10, height=44)
+            corner_radius=20, height=44)
         hdr.grid(row=0, column=0, sticky="ew",
             padx=8, pady=(8,4))
         hdr.grid_propagate(False)
@@ -449,14 +449,14 @@ class App(ctk.CTk):
             width=58, height=28,
             font=ctk.CTkFont("Segoe UI", 10),
             fg_color=BG4, hover_color=BDR,
-            text_color=TXT3, corner_radius=6,
+            text_color=TXT3, corner_radius=20,
             command=self.clear_log).grid(
             row=0, column=1, padx=(0,8))
 
         self.log_text = ctk.CTkTextbox(parent,
             font=ctk.CTkFont("Consolas", 11),
             fg_color=LOG_BG, text_color=TXT,
-            corner_radius=8, wrap="word",
+            corner_radius=20, wrap="word",
             state="disabled",
             scrollbar_button_color=BG3,
             scrollbar_button_hover_color=BDR)
