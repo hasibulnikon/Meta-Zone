@@ -112,7 +112,7 @@ class App(ctk.CTk):
         self._load_icon()
         self._build_ui()
         self._center(920, 920)
-        self.minsize(620, 620)
+        self.minsize(536, 620)
         self.after(200, self._check_et)
 
     def _load_icon(self):
@@ -203,7 +203,7 @@ class App(ctk.CTk):
         self._build_folder_card()
         self._build_map_card()
 
-        # Right log panel — fixed 210px
+        # Right log panel — fixed 200px
         log_outer = ctk.CTkFrame(body, fg_color=BG2,
             corner_radius=20, border_width=1,
             border_color=BDR, width=200)
