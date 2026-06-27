@@ -262,8 +262,8 @@ class App(ctk.CTk):
             font=ctk.CTkFont("Segoe UI", 13, "bold"),
             fg_color=GBNB, text_color="white",
             corner_radius=999,
-            width=34, height=34).grid(
-            row=0, column=0, padx=(14,10), pady=8)
+            width=30, height=30).grid(
+            row=0, column=0, padx=(12,10), pady=7)
 
         ctk.CTkLabel(hdr, text=title,
             font=ctk.CTkFont("Segoe UI", 13, "bold"),
@@ -272,7 +272,7 @@ class App(ctk.CTk):
 
         if browse_cmd:
             ctk.CTkButton(hdr, text="Browse",
-                width=95, height=32,
+                width=90, height=32,
                 font=ctk.CTkFont("Segoe UI", 11, "bold"),
                 fg_color=GBNB, hover_color=GBNB2,
                 text_color="white", corner_radius=20,
@@ -291,8 +291,8 @@ class App(ctk.CTk):
             text_color=GRN,
             fg_color=BDR,
             onvalue=True, offvalue=False,
-            switch_width=56,
-            switch_height=28)
+            switch_width=46,
+            switch_height=24)
 
     def _build_csv_card(self):
         card = self._card_frame()
