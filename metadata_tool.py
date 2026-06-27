@@ -220,7 +220,7 @@ class App(ctk.CTk):
         row.grid_columnconfigure(0, weight=1)
 
         self.embed_btn = ctk.CTkButton(row,
-            text="▶   Embed Metadata Now",
+            text="▶  Start Embedding",
             font=ctk.CTkFont("Segoe UI", 15, "bold"),
             fg_color=GBNB, hover_color=GBNB2,
             text_color="white", height=54,
@@ -753,7 +753,7 @@ class App(ctk.CTk):
             self.log(f"● Done — {summary}"),
             self.set_status(f"Done — {summary}", GRN),
             self.embed_btn.configure(
-                state="normal", text="▶   Embed Metadata Now"),
+                state="normal", text="▶  Start Again"),
             setattr(self,'running',False)
         ))
 
