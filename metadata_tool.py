@@ -291,8 +291,9 @@ class App(ctk.CTk):
             text_color=GRN,
             fg_color=BDR,
             onvalue=True, offvalue=False,
-            switch_width=46,
-            switch_height=24)
+            switch_width=52,
+            switch_height=26,
+            corner_radius=13)
 
     def _build_csv_card(self):
         card = self._card_frame()
