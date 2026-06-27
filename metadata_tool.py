@@ -220,7 +220,7 @@ class App(ctk.CTk):
         row.grid_columnconfigure(0, weight=1)
 
         self.embed_btn = ctk.CTkButton(row,
-            text="▶  Start Embedding",
+            text="▶  Start Now",
             font=ctk.CTkFont("Segoe UI", 15, "bold"),
             fg_color=GBNB, hover_color=GBNB2,
             text_color="white", height=54,
@@ -262,8 +262,8 @@ class App(ctk.CTk):
             font=ctk.CTkFont("Segoe UI", 13, "bold"),
             fg_color=GBNB, text_color="white",
             corner_radius=999,
-            width=30, height=30).grid(
-            row=0, column=0, padx=(12,10), pady=7)
+            width=24, height=30).grid(
+            row=0, column=0, padx=(10,10), pady=7)
 
         ctk.CTkLabel(hdr, text=title,
             font=ctk.CTkFont("Segoe UI", 13, "bold"),
@@ -291,9 +291,8 @@ class App(ctk.CTk):
             text_color=GRN,
             fg_color=BDR,
             onvalue=True, offvalue=False,
-            switch_width=52,
-            switch_height=26,
-            corner_radius=13)
+            switch_width=46,
+            switch_height=24)
 
     def _build_csv_card(self):
         card = self._card_frame()
