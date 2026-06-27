@@ -285,12 +285,12 @@ class App(ctk.CTk):
             variable=var,
             font=ctk.CTkFont("Segoe UI", 12),
             progress_color=GBNB,
-            button_color=TXT,
-            button_hover_color="#ccccff",
+            button_color="white",
+            button_hover_color="#dddddd",
             text_color=GRN,
             fg_color=BDR,
             onvalue=True, offvalue=False,
-            width=56, height=28)
+            width=60, height=30)
 
     def _build_csv_card(self):
         card = self._card_frame()
