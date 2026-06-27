@@ -8,7 +8,7 @@ ctk.set_default_color_theme("green")
 # ── Colors ─────────────────────────────────────────────────────────────
 BG   = "#050724"   # darkest blue
 BG2  = "#090c2e"   # card bg
-BG3  = "#0d1040"   # header / input bg
+BG3  = "#1b1b29"   # header / input bg
 BG4  = "#030518"   # titlebar / statusbar
 TXT  = "#e8e8f4"
 TXT2 = "#9a9ab8"
