@@ -112,7 +112,7 @@ class App(ctk.CTk):
         self._load_icon()
         self._build_ui()
         self._center(920, 920)
-        self.minsize(720, 620)
+        self.minsize(620, 620)
         self.after(200, self._check_et)
 
     def _load_icon(self):
