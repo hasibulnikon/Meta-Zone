@@ -7,8 +7,8 @@ ctk.set_default_color_theme("green")
 
 # ── Colors ─────────────────────────────────────────────────────────────
 BG   = "#050724"   # darkest blue
-BG2  = "#090b1c"   # card bg
-BG3  = "#1b1b29"   # header / input bg
+BG2  = "#1b1b29"   # card bg
+BG3  = "#090b1c"   # header / input bg
 BG4  = "#030518"   # titlebar / statusbar
 TXT  = "#e8e8f4"
 TXT2 = "#9a9ab8"
@@ -261,8 +261,8 @@ class App(ctk.CTk):
         ctk.CTkLabel(hdr, text=str(num),
             font=ctk.CTkFont("Segoe UI", 12, "bold"),
             fg_color=GBNB, text_color="white",
-            corner_radius=50,
-            width=36, height=36).grid(
+            corner_radius=60,
+            width=30, height=30).grid(
             row=0, column=0, padx=(14,10), pady=7)
 
         ctk.CTkLabel(hdr, text=title,
