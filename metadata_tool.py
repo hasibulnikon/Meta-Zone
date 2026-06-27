@@ -107,12 +107,12 @@ class App(ctk.CTk):
         self.col_desc_var    = ctk.StringVar(value="(skip)")
         self.match_only_var  = ctk.BooleanVar(value=True)
         self.subfolder_var   = ctk.BooleanVar(value=True)
-        self.rm_prog_var     = ctk.BooleanVar(value=False)
+        self.rm_prog_var     = ctk.BooleanVar(value=True)
 
         self._load_icon()
         self._build_ui()
-        self._center(1100, 720)
-        self.minsize(900, 620)
+        self._center(920, 920)
+        self.minsize(720, 620)
         self.after(200, self._check_et)
 
     def _load_icon(self):
