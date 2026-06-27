@@ -236,7 +236,7 @@ class App(ctk.CTk):
         self.reset_btn.grid(row=0, column=1, padx=(8,0))
 
         self.save_log_btn = ctk.CTkButton(row,
-            text="💾  Save Log", width=130, height=54,
+            text="💾", width=54, height=54,
             font=ctk.CTkFont("Segoe UI", 12, "bold"),
             fg_color=BG3, hover_color=BDR,
             text_color=TXT2, corner_radius=27,
