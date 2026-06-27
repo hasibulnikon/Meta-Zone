@@ -262,8 +262,8 @@ class App(ctk.CTk):
             font=ctk.CTkFont("Segoe UI", 13, "bold"),
             fg_color=GBNB, text_color="white",
             corner_radius=999,
-            width=20, height=40).grid(
-            row=0, column=0, padx=(12,10), pady=7)
+            width=48, height=48).grid(
+            row=0, column=0, padx=(10,10), pady=5)
 
         ctk.CTkLabel(hdr, text=title,
             font=ctk.CTkFont("Segoe UI", 13, "bold"),
